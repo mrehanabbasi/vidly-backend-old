@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  vidly-backend:
+    build: .
+    networks:
+      - db-net
+    environment:
+      jwtPrivateKey: unsecureKey
+      db: db
+      PORT: 3900
+    # ports:
+    #   - "3900:3000"
+    init: true
+    depends_on:
+      - db
+
+  db:
+    image: mongo:4.2.12-bionic
+    restart: always
+    networks:
+      - db-net
+
+networks:
+  db-net:
+    driver: bridge
+    internal: true
