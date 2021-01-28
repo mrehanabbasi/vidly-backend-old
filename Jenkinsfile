@@ -3,18 +3,18 @@ pipeline {
     registryCredential = 'DockerHub'
   }
   agent any
-  stage('Build') {
+  stages('Build') {
     steps {
       sh "docker-compose up -d"
     }
   }
-  stage('Test') {
+  stages('Test') {
     steps {
       sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
       sh "docker-compose down"
     }
   }
-  stage('Publish') {
+  stages('Publish') {
     steps {
       script {
         docker.withRegistry( '', registryCredential ) {
