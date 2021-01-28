@@ -3,6 +3,7 @@ version: '3.9'
 services:
   vidly-backend:
     build: .
+    image: ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER}
     networks:
       - db-net
     environment:
