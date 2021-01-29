@@ -11,7 +11,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh "docker-compose run --service-ports vidly-backend npm test -- --watchAll=false"
+        sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
       }
     }
     stage('Publish') {
