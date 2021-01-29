@@ -28,7 +28,7 @@ pipeline {
   }
   post {
     cleanup {
-      sh "docker-compose down --rmi all" || true
+      sh "docker-compose down --rmi all"
     }
   }
 }
