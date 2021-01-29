@@ -3,24 +3,26 @@ pipeline {
     registryCredential = 'DockerHub'
   }
   agent any
-  stages('Build') {
-    steps {
-      sh "docker-compose up -d"
+  stages {
+    stage('Build') {
+      steps {
+        sh "docker-compose up -d"
+      }
     }
-  }
-  stages('Test') {
-    steps {
-      sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
-      sh "docker-compose down --rmi all"
+    stage('Test') {
+      steps {
+        sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
+        sh "docker-compose down --rmi all"
+      }
     }
-  }
-  stages('Publish') {
-    steps {
-      script {
-        docker.withRegistry( '', registryCredential ) {
-          sh "docker tag ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER} ${DOCKERHUB_USERNAME}/vidly-backend:latest"
-          sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:latest"
-          sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER}"
+    stage('Publish') {
+      steps {
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            sh "docker tag ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER} ${DOCKERHUB_USERNAME}/vidly-backend:latest"
+            sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:latest"
+            sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER}"
+          }
         }
       }
     }
