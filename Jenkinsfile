@@ -11,20 +11,25 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
-        sh "docker-compose down --rmi all"
+        sh "docker-compose run --service-ports vidly-backend npm test -- --watchAll=false"
       }
     }
     stage('Publish') {
       steps {
         script {
           docker.withRegistry( '', registryCredential ) {
-            sh "docker tag ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER} ${DOCKERHUB_USERNAME}/vidly-backend:latest"
-            sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:latest"
-            sh "docker push ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER}"
+            sh "docker tag ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER} ${DOCKERHUB_USERNAME}/${JOB_NAME}:latest"
+            sh "docker tag ${DOCKERHUB_USERNAME}/vidly-backend:${BUILD_NUMBER} ${DOCKERHUB_USERNAME}/${JOB_NAME}:${BUILD_NUMBER}"
+            sh "docker push ${DOCKERHUB_USERNAME}/${JOB_NAME}:latest"
+            sh "docker push ${DOCKERHUB_USERNAME}/${JOB_NAME}:${BUILD_NUMBER}"
           }
         }
       }
+    }
+  }
+  post {
+    cleanup {
+      sh "docker-compose down --rmi all"
     }
   }
 }
