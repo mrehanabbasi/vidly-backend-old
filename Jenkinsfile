@@ -6,12 +6,12 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh "sudo docker-compose up -d"
+        sh "docker-compose up -d"
       }
     }
     stage('Test') {
       steps {
-        sh "sudo docker-compose run --service-ports vidly-backend npm test -- --forceExit"
+        sh "docker-compose run --service-ports vidly-backend npm test -- --forceExit"
       }
     }
     stage('Publish') {
@@ -28,7 +28,7 @@ pipeline {
   }
   post {
     cleanup {
-      sh "sudo docker-compose down --rmi all" || true
+      sh "docker-compose down --rmi all" || true
     }
   }
 }
